@@ -1,6 +1,8 @@
 # NarrativeView
 Madlib style form view
 
+![](https://github.com/bennyinc/NarrativeView/blob/master/madlib.gif)
+
 # Features
 1. Text fields expand while users are entering text, reflowing to the next line if necessary
 2. Labels are broken up as individual words
