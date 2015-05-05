@@ -7,6 +7,7 @@ Madlib style form view
 1. Text fields expand while users are entering text, reflowing to the next line if necessary
 2. Labels are broken up as individual words
 3. All text fields are validated via passed in lambda and appearance is updatable via the `NarrativeTextFieldSettableAppearance` protocol
+4. Appearance of fields, buttons, and labels is completely customizable
 
 # Usage
 
