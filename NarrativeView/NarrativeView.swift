@@ -26,12 +26,13 @@ public protocol NarrativeViewDelegate {
 }
 
 public class NarrativeView: UIScrollView, UITextFieldDelegate {
+    public var rowHeight: CGFloat = 40.0
     /**
     Sets background colors of contained views to alternating colors for easier layout debugging.
     */
     private let debugViewLayout = false
     private var flowItems: [UIView] = []
-    private let layoutHelper: NarrativeLayout
+    private var layoutHelper: NarrativeLayout
     private let layoutFrame: CGRect
 
     /**
@@ -93,10 +94,13 @@ public class NarrativeView: UIScrollView, UITextFieldDelegate {
         keyboardDismissMode = UIScrollViewKeyboardDismissMode.OnDrag
     }
     required public init(coder decoder: NSCoder) {
-        assert(false, "Init coder not implemented")
-        layoutFrame = CGRectZero
-        layoutHelper = NarrativeLayout(origin: layoutFrame.origin, rowWidth: layoutFrame.width, rowHeight: 0)
+        layoutFrame = CGRect(x: 0, y: 0, width: 400, height: 200)
+        layoutHelper = NarrativeLayout(origin: layoutFrame.origin, rowWidth: layoutFrame.width, rowHeight: rowHeight)
         super.init(coder: decoder)
+        scrollEnabled = true
+        bounces = true
+        alwaysBounceVertical = true
+        keyboardDismissMode = UIScrollViewKeyboardDismissMode.OnDrag
     }
     override public var isAccessibilityElement: Bool {
         get {
@@ -107,7 +111,10 @@ public class NarrativeView: UIScrollView, UITextFieldDelegate {
         }
     }
     override public func layoutSubviews() {
-        layoutHelper.layout(layout.items) ?? []
+        layoutHelper = NarrativeLayout(origin: bounds.origin, rowWidth: bounds.width, rowHeight: rowHeight)
+        if layout.items.count > 0 {
+            layoutHelper.layout(layout.items)
+        }
     }
     /// Delegate for the flow form
     public var narrativeViewDelegate: NarrativeViewDelegate?
