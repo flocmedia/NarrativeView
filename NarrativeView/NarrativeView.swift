@@ -92,6 +92,8 @@ public class NarrativeView: UIScrollView, UITextFieldDelegate {
         bounces = true
         alwaysBounceVertical = true
         keyboardDismissMode = UIScrollViewKeyboardDismissMode.OnDrag
+        showsVerticalScrollIndicator = false
+        showsHorizontalScrollIndicator = false
     }
     required public init(coder decoder: NSCoder) {
         layoutFrame = CGRect(x: 0, y: 0, width: 400, height: 200)
@@ -101,6 +103,8 @@ public class NarrativeView: UIScrollView, UITextFieldDelegate {
         bounces = true
         alwaysBounceVertical = true
         keyboardDismissMode = UIScrollViewKeyboardDismissMode.OnDrag
+        showsVerticalScrollIndicator = false
+        showsHorizontalScrollIndicator = false
     }
     override public var isAccessibilityElement: Bool {
         get {
@@ -111,9 +115,10 @@ public class NarrativeView: UIScrollView, UITextFieldDelegate {
         }
     }
     override public func layoutSubviews() {
-        layoutHelper = NarrativeLayout(origin: bounds.origin, rowWidth: bounds.width, rowHeight: rowHeight)
+        layoutHelper = NarrativeLayout(origin: CGPointZero, rowWidth: bounds.width, rowHeight: rowHeight)
         if layout.items.count > 0 {
             layoutHelper.layout(layout.items)
+            contentSize = CGSize(width: bounds.width, height: bounds.height + 10)
         }
     }
     /// Delegate for the flow form
@@ -196,7 +201,6 @@ public class NarrativeView: UIScrollView, UITextFieldDelegate {
         } else {
             backgroundColor = UIColor.clearColor()
         }
-        contentSize = CGSize(width: bounds.width, height: bounds.height + 10)
     }
     //MARK: - Accessibility
     private class AccessibleLabelSpan {
