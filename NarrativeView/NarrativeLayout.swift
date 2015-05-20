@@ -28,6 +28,7 @@ struct NarrativeLayout {
     let origin: CGPoint
     let rowWidth: CGFloat
     let rowHeight: CGFloat
+    let rowVerticalPadding: CGFloat
     /**
     Layout items inside the given frame.
     
@@ -58,7 +59,8 @@ struct NarrativeLayout {
                 xOffset = origin.x
             }
             view.frame.origin.x = xOffset
-            view.frame.origin.y = origin.y + (row * rowHeight)
+            let verticalPadding = (row == 0 ? 0 : rowVerticalPadding)
+            view.frame.origin.y = origin.y + (row * (rowHeight + verticalPadding))
             xOffset += view.frame.width
             return (row, xOffset)
         }

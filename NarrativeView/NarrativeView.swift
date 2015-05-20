@@ -27,13 +27,12 @@ public protocol NarrativeViewDelegate {
 
 public class NarrativeView: UIScrollView, UITextFieldDelegate {
     public var rowHeight: CGFloat = 40.0
+    public var rowVerticalPadding: CGFloat = 4.0
     /**
     Sets background colors of contained views to alternating colors for easier layout debugging.
     */
-    private let debugViewLayout = false
     private var flowItems: [UIView] = []
     private var layoutHelper: NarrativeLayout
-    private let layoutFrame: CGRect
 
     /**
     *  Comprised of layout items.
@@ -83,10 +82,10 @@ public class NarrativeView: UIScrollView, UITextFieldDelegate {
         }
     }
     private var layout: Layout = Layout()
-    public init(frame: CGRect, rowHeight: CGFloat) {
-        let edgeInsets = UIEdgeInsets(top: 48, left: 13, bottom: 64, right: 13)
-        layoutFrame = UIEdgeInsetsInsetRect(frame, edgeInsets)
-        layoutHelper = NarrativeLayout(origin: layoutFrame.origin, rowWidth: layoutFrame.width, rowHeight: rowHeight)
+    public init(frame: CGRect, rowHeight: CGFloat, rowVerticalPadding: CGFloat) {
+        layoutHelper = NarrativeLayout(origin: frame.origin, rowWidth: frame.width, rowHeight: rowHeight, rowVerticalPadding: rowVerticalPadding)
+        self.rowHeight = rowHeight
+        self.rowVerticalPadding = rowVerticalPadding
         super.init(frame: frame)
         scrollEnabled = true
         bounces = true
@@ -96,8 +95,8 @@ public class NarrativeView: UIScrollView, UITextFieldDelegate {
         showsHorizontalScrollIndicator = false
     }
     required public init(coder decoder: NSCoder) {
-        layoutFrame = CGRect(x: 0, y: 0, width: 400, height: 200)
-        layoutHelper = NarrativeLayout(origin: layoutFrame.origin, rowWidth: layoutFrame.width, rowHeight: rowHeight)
+        let layoutFrame = CGRect(x: 0, y: 0, width: 400, height: 200)
+        layoutHelper = NarrativeLayout(origin: layoutFrame.origin, rowWidth: layoutFrame.width, rowHeight: rowHeight, rowVerticalPadding: rowVerticalPadding)
         super.init(coder: decoder)
         scrollEnabled = true
         bounces = true
@@ -115,7 +114,7 @@ public class NarrativeView: UIScrollView, UITextFieldDelegate {
         }
     }
     override public func layoutSubviews() {
-        layoutHelper = NarrativeLayout(origin: CGPointZero, rowWidth: bounds.width, rowHeight: rowHeight)
+        layoutHelper = NarrativeLayout(origin: CGPointZero, rowWidth: bounds.width, rowHeight: rowHeight, rowVerticalPadding: rowVerticalPadding)
         if layout.items.count > 0 {
             layoutHelper.layout(layout.items)
             contentSize = CGSize(width: bounds.width, height: bounds.height + 10)
@@ -188,20 +187,8 @@ public class NarrativeView: UIScrollView, UITextFieldDelegate {
                 button.addTarget(self, action: "onFlowButtonPressed:", forControlEvents: UIControlEvents.TouchUpInside)
             }
         }
-        if debugViewLayout {
-            backgroundColor = UIColor.whiteColor()
-            var backgroundColorAlternator = 1
-            for item in flowItems {
-                if let textField = item as? UITextField {
-                    textField.backgroundColor = UIColor.greenColor()
-                } else if let textLabel = item as? UILabel {
-                    textLabel.backgroundColor = backgroundColorAlternator++ % 2 == 0 ? UIColor.yellowColor() : UIColor.lightGrayColor()
-                }
-            }
-        } else {
-            backgroundColor = UIColor.clearColor()
-        }
     }
+    
     //MARK: - Accessibility
     private class AccessibleLabelSpan {
         let containerView: UIView
@@ -363,5 +350,12 @@ public class NarrativeView: UIScrollView, UITextFieldDelegate {
                 break
             }
         }
+    }
+}
+
+// Punch through access to private stuff for unit tests 🐋💨
+extension NarrativeView {
+    public func testingGetFlowItems() -> [UIView] {
+        return flowItems
     }
 }

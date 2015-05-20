@@ -84,6 +84,7 @@ class ViewController: UIViewController, NarrativeViewDelegate {
         narrativeView.narrativeViewDelegate = self
         narrativeView.backgroundColor = UIColor.yellowColor().colorWithAlphaComponent(0.5)
         narrativeView.rowHeight = 40.0
+        narrativeView.rowVerticalPadding = 4.0
         narrativeView.setNeedsDisplay()
     }
     //MARK: - Helpers
